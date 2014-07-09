@@ -8,9 +8,13 @@ itob		0
 shiftli		0
 shiftri		0
 loadb		1
+storeb		1
 loadi		1
+storei		1
 gloadb		1
+gstoreb		1
 gloadi		1
+gstorei		1
 br		1
 brz		1
 brnz		1
@@ -19,6 +23,9 @@ brgt		1
 brgte		1
 brlte		1
 call		2
+ret		0
 xori		0
 ori		0
 andi		0
+printi		0
+emitb		0

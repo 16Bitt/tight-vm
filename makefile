@@ -1,8 +1,8 @@
 SOURCES = main.o
-CFLAGS	= -w
+CFLAGS	= -w -Iheader/
 OUTPUT	= main
 
-all: $(SOURCES)
+all: init $(SOURCES)
 	cc $(CFLAGS) $(SOURCES) -o $(OUTPUT)
 
 init:
@@ -11,7 +11,7 @@ init:
 uninit:
 	-rm header/opcodes.h
 
-clean:
+clean: uninit
 	-rm *.o $(OUTPUT)
 
 run: all
