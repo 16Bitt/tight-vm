@@ -50,7 +50,7 @@ end
 #We are finished with infile
 infile.close
 
-header_name = ARGV[1].upcase.gsub ".", "_"
+header_name = ARGV[1].upcase.gsub(".", "_").gsub("/","_")
 outfile.puts "#ifndef #{header_name}"
 outfile.puts "#define #{header_name}\n"
 
@@ -68,7 +68,7 @@ outfile.puts
 outfile.puts "#define NUM_OPS #{count}\n"
 
 #Create start of string reference table
-outfile.print "char** op_str_val = { "
+outfile.print "#define op_str_val { "
 
 puts "Creating string table..."
 #Fill in table
@@ -79,10 +79,10 @@ operands.each do |op|
 end
 
 #End string table
-outfile.puts "};"
+outfile.puts "}"
 
 #Create start of length reference table
-outfile.print "int op_len_val[] = { "
+outfile.print "#define op_len_val { "
 
 puts "Creating length table..."
 #Fill in table
@@ -91,10 +91,9 @@ operands.each do |op|
 end
 
 #End length table
-outfile.puts "};\n"
+outfile.puts "}\n"
 
 outfile.puts "#endif"
-
 outfile.close
 
 puts "Header generation for #{ARGV[0]} complete."

@@ -29,3 +29,4 @@ ori		0
 andi		0
 printi		0
 emitb		0
+halt		0

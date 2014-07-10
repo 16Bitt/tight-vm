@@ -4,6 +4,6 @@
 
 #define VMERR	(-1)
 
-int error(char* message, vproc_t* process);
+int error(char* message, vproc_t* process, int e_offs);
 
 #endif

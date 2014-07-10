@@ -1,6 +1,8 @@
 #include "vproc.h"
 #include "stdio.h"
 #include "vm-error.h"
+#include "opcodes.h"
+#include "stdlib.h"
 
 int tick(vproc_t* current){
 	var op = code[pc];
@@ -30,12 +32,50 @@ int tick(vproc_t* current){
 			b = stack[--sp];
 			stack[sp++] = b / a;
 			break;
+		case CONSTI:
+			stack[sp++] = code[pc];
+			pc++;
+			break;
 		case PRINTI:
 			printf("%u", stack[--sp]);
 			break;
-
+		case HALT:
+			return VM_OK;
 		default:
-			return error("Unrecognized opcode", current);
+			return error("Unrecognized opcode", current, 1);
 			break;
 	}
+	
+	if((sp < 0) || (sp >= current->stack_size))
+		return error("Stack underflow", current, 0);
+
+	if(pc > current->code_size)
+		return error("Execution passed code boundaries", current, 0);
+
+	return 0;
+}
+
+vproc_t* new_proc(int* new_code, int code_size, int data_size, int stack_size, int entry_point, int uid){
+	vproc_t* current = (vproc_t*) malloc(sizeof(vproc_t));
+	current->code_size = code_size;
+
+	pc = entry_point;
+	sp = 0;
+	code = new_code;
+
+	stack = (var*) malloc(sizeof(var) * stack_size);
+	current->stack_size = stack_size;
+	data = (void*) malloc(data_size);
+	current->data_size = data_size;
+	
+	fp = 0;
+	current->uid = uid;
+
+	return current;
+}
+
+void cleanup_proc(vproc_t* current){
+	free(stack);
+	free(data);
+	free(current);
 }

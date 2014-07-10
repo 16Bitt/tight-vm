@@ -1,4 +1,4 @@
-SOURCES = main.o
+SOURCES = main.o vm-error.o vm.o disasm.o
 CFLAGS	= -w -Iheader/
 OUTPUT	= main
 
