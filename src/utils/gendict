@@ -1,11 +1,11 @@
 #! /usr/bin/env ruby
 
 def usage
-	puts "gendict INPUT OUTPUT"
+	puts "gendict INPUT HEADER CODE"
 end
 
 #Check that the number of arguments match our requirement
-if ARGV.length != 2
+if ARGV.length != 3
 	usage
 	puts "Not enough arguments"
 	exit -1
@@ -15,11 +15,11 @@ puts "Generating #{ARGV[1]} from #{ARGV[0]}"
 
 infile	= ARGV[0]
 outfile	= ARGV[1]
+cfile	= ARGV[2]
 
 #Check if the arguments were valid
 if File.exists? outfile
-	puts "error: outfile exists"
-	exit -1
+	puts "warning: outfile exists"
 end
 if not File.exists? infile
 	puts "error: infile does not exist"
@@ -29,6 +29,7 @@ end
 #Open both files
 infile	= File.open infile, "r"
 outfile	= File.open outfile, "w"
+cfile	= File.open cfile, "w"
 
 #Initialize our reference table
 operands = []
@@ -68,32 +69,35 @@ outfile.puts
 outfile.puts "#define NUM_OPS #{count}\n"
 
 #Create start of string reference table
-outfile.print "#define op_str_val { "
+cfile.print "const char* const op_str_val[] = { "
+outfile.puts "extern const char* const op_str_val[];"
 
 puts "Creating string table..."
 #Fill in table
 operands.each do |op|
-	outfile.print '"'
-	outfile.print "#{op[0]}"
-	outfile.print '", '
+	cfile.print '"'
+	cfile.print "#{op[0]}"
+	cfile.print '", '
 end
 
 #End string table
-outfile.puts "}"
+cfile.puts "};"
 
 #Create start of length reference table
-outfile.print "#define op_len_val { "
+cfile.print "const int const op_len_val[] = { "
+outfile.puts "extern const int const op_len_val[];"
 
 puts "Creating length table..."
 #Fill in table
 operands.each do |op|
-	outfile.print "#{op[1]}, "
+	cfile.print "#{op[1]}, "
 end
 
 #End length table
-outfile.puts "}\n"
+cfile.puts "};\n"
 
 outfile.puts "#endif"
 outfile.close
+cfile.close
 
 puts "Header generation for #{ARGV[0]} complete."

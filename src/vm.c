@@ -9,6 +9,7 @@ int tick(vproc_t* current){
 	pc++;
 
 	var a, b;
+	unsigned int data_ptr = (unsigned int) data;
 	switch(op){
 		case NOP:
 			break;
@@ -39,6 +40,18 @@ int tick(vproc_t* current){
 		case PRINTI:
 			printf("%u", stack[--sp]);
 			break;
+		case GLOADI:
+			stack[sp++] = *((var*) (data_ptr + code[pc]));
+			pc++;
+			break;
+		case GLOADB:
+			stack[sp++] = (var)  *((char*) (data_ptr + code[pc]));
+			pc++;
+			break;
+		case GSTOREB:
+			break;
+		case GSTOREI:
+			break;
 		case HALT:
 			return VM_OK;
 		default:
@@ -46,7 +59,7 @@ int tick(vproc_t* current){
 			break;
 	}
 	
-	if((sp < 0) || (sp >= current->stack_size))
+	if((sp <= 0) || (sp >= current->stack_size))
 		return error("Stack underflow", current, 0);
 
 	if(pc > current->code_size)
