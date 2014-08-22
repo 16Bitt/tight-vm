@@ -49,11 +49,16 @@ int tick(vproc_t* current){
 			pc++;
 			break;
 		case GSTOREB:
+			*((char*) (data_ptr + code[pc])) = (char) stack[--sp];
 			break;
 		case GSTOREI:
+			*((var*) (data_ptr + code[pc])) = stack[--sp];
 			break;
 		case HALT:
 			return VM_OK;
+		case DBG:
+			error("Debug instruction", current, 0);
+			break;
 		default:
 			return error("Unrecognized opcode", current, 1);
 			break;
