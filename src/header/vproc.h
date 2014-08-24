@@ -33,9 +33,16 @@ typedef unsigned int var;
 
 //Update process
 int tick(vproc_t* process);
-vproc_t* new_proc(int*, int, int, int, int, int);
+
+//spawn new process
+vproc_t* new_proc(int* new_code, int code_size, int data_size, int stack_size, int entry_point, int uid);
+
+//Clean up after finished process. Make sure process is finished,
+//or that VM_KILL has been sent and the process has been given
+//50 tick()'s to finish after the signal
 void cleanup_proc(vproc_t* current);
 
+//Signals a clean exit
 #define VM_OK	(1)
 
 #endif
