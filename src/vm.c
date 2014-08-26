@@ -11,8 +11,11 @@ int tick(vproc_t* current){
 	var a, b;
 	unsigned int data_ptr = (unsigned int) data;
 	switch(op){
+		//Skip
 		case NOP:
 			break;
+		
+		//Arithmetic
 		case ADDI:
 			a = stack[--sp];
 			b = stack[--sp];
@@ -33,13 +36,27 @@ int tick(vproc_t* current){
 			b = stack[--sp];
 			stack[sp++] = b / a;
 			break;
+		
+		//Binary math
+		case ANDI:
+			break;
+		case ORI:
+			break;
+		case XORI:
+			break;
+		
+		//Constants
 		case CONSTI:
 			stack[sp++] = code[pc];
 			pc++;
 			break;
+		
+		//Keyboard I/O
 		case PRINTI:
 			printf("%u", stack[--sp]);
 			break;
+		
+		//Data movement instructions
 		case GLOADI:
 			stack[sp++] = *((var*) (data_ptr + code[pc]));
 			pc++;
@@ -54,11 +71,15 @@ int tick(vproc_t* current){
 		case GSTOREI:
 			*((var*) (data_ptr + code[pc])) = stack[--sp];
 			break;
+		
+		//System instructions
 		case HALT:
 			return VM_OK;
 		case DBG:
 			error("Debug instruction", current, 0);
 			break;
+		
+		//Invalid instruction
 		default:
 			return error("Unrecognized opcode", current, 1);
 			break;

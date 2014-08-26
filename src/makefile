@@ -1,4 +1,4 @@
-SOURCES = main.o vm-error.o vm.o disasm.o opcodes.o vm-file.o
+SOURCES = main.o vm-error.o vm.o disasm.o opcodes.o vm-file.o vsock.o
 CFLAGS	= -w -Iheader/ -m32 -ggdb
 OUTPUT	= main
 
