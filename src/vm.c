@@ -55,7 +55,10 @@ int tick(vproc_t* current){
 		case PRINTI:
 			printf("%u", stack[--sp]);
 			break;
-		
+		case EMITB:
+			printf("%c", (char) stack[--sp]);
+			break;
+
 		//Data movement instructions
 		case GLOADI:
 			stack[sp++] = *((var*) (data_ptr + code[pc]));
@@ -85,7 +88,7 @@ int tick(vproc_t* current){
 			break;
 	}
 	
-	if((sp <= 0) || (sp >= current->stack_size))
+	if((sp < 0) || (sp >= current->stack_size))
 		return error("Stack underflow", current, 0);
 
 	if(pc > current->code_size)

@@ -22,7 +22,8 @@ void disasm(vproc_t* current, var address){
 			printf("%X:\t%s", address + i, op_str_val[code[address + i]]);
 			i++;
 			int j;
-			for(j = 0; j < op_len_val[code[address + i + j]]; j++, i++)
+			int bounds = op_len_val[code[address + i - 1]];
+			for(j = 0; j < bounds; j++, i++)
 				printf(" %X", code[address + i + j]);
 
 			puts("");
