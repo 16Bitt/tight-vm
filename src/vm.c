@@ -39,10 +39,19 @@ int tick(vproc_t* current){
 		
 		//Binary math
 		case ANDI:
+			a = stack[--sp];
+			b = stack[--sp];
+			stack[sp++] = a & b;
 			break;
 		case ORI:
+			a = stack[--sp];
+			b = stack[--sp];
+			stack[sp++] = a | b;
 			break;
 		case XORI:
+			a = stack[--sp];
+			b = stack[--sp];
+			stack[sp++] = a ^ b;
 			break;
 		
 		//Constants
@@ -70,14 +79,70 @@ int tick(vproc_t* current){
 			break;
 		case GSTOREB:
 			*((char*) (data_ptr + code[pc])) = (char) stack[--sp];
+			pc++;
 			break;
 		case GSTOREI:
 			*((var*) (data_ptr + code[pc])) = stack[--sp];
+			pc++;
 			break;
 		case LOAD:
+			stack[sp++] = stack[fp + code[pc + 1]];
+			pc++;
 			break;
 		case STORE:
+			stack[fp + code[pc + 1]] = stack[--sp];
+			pc++;
 			break;
+		
+		//Flow control instructions
+		case BR:
+			pc = code[pc];
+			break;
+		case BRZ:
+			if(!stack[--sp])
+				pc = code[pc];
+			else
+				pc++;
+			break;
+		case BRNZ:
+			if(stack[--sp])
+				pc = code[pc];
+			else
+				pc++;
+			break;
+		case BRLT:
+			b = stack[--sp];
+			a = stack[--sp];
+			if(a < b)
+				pc = code[pc];
+			else
+				pc++;
+			break;
+		case BRGT:
+			b = stack[--sp];
+			a = stack[--sp];
+			if(a > b)
+				pc = code[pc];
+			else
+				pc++;
+			break;
+		case BRGTE:
+			b = stack[--sp];
+			a = stack[--sp];
+			if(a >= b)
+				pc = code[pc];
+			else
+				pc++;
+			break;
+		case BRLTE:
+			b = stack[--sp];
+			a = stack[--sp];
+			if(a <= b)
+				pc = code[pc];
+			else
+				pc++;
+			break;
+
 		//System instructions
 		case HALT:
 			return VM_OK;

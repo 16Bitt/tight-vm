@@ -4,6 +4,9 @@
 //For 'var' datatype
 #include "vproc.h"
 
+//Number of sockets to use
+#define VSOCK_SIZE 16
+
 typedef struct{
 	//Required priveledge, smaller is higher priveledge
 	var priveledge;
@@ -19,9 +22,14 @@ typedef struct{
 	var ouput;
 } vsock_t;
 
+//Table of all vsocks
+extern vsock_t** vsock_list;
+
+//Initialize vsock table
+void init_vsocks();
 //Make a socket
-vsock_t*	mk_vsock(var priveledge, var pid);
+var	mk_vsock(var priveledge, var pid);
 //Remove a socket
-void		rm_vsock(vsock_t* socket);
+var	rm_vsock(var sock_id);
 
 #endif

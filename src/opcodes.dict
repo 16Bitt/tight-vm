@@ -35,3 +35,6 @@ printi		0
 emitb		0
 halt		0
 dbg		0
+mksock		0
+rmsock		0
+rtsock		0
