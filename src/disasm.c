@@ -19,12 +19,12 @@ void disasm(vproc_t* current, var address){
 		if((code[address + i] > (NUM_OPS - 1)) || (code[address + i] < 0))
 			printf("%X:\tUNDEFINED OPCODE\n", address + i);
 		else{
-			printf("%X:\t%s", address + i, op_str_val[code[address + i]]);
+			printf("0x%X:\t%s", address + i, op_str_val[code[address + i]]);
 			i++;
 			int j;
 			int bounds = op_len_val[code[address + i - 1]];
 			for(j = 0; j < bounds; j++, i++)
-				printf(" %X", code[address + i + j]);
+				printf(" 0x%X", code[address + i + j]);
 
 			puts("");
 		}

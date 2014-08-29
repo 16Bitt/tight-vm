@@ -4,6 +4,7 @@
 #include "disasm.h"
 
 var run1[] = {
+	DBG,
 	CONSTI, 65,
 	PRINTI,
 	CONSTI, 66,
@@ -23,7 +24,7 @@ var run2[] = {
 };
 
 int main(){
-	vproc_t* p1 = new_proc(run1, 7, 0, 4, 0, 0);
+	vproc_t* p1 = new_proc(run1, 8, 0, 4, 0, 0);
 	vproc_t* p2 = new_proc(run2, 11, 0, 4, 0, 0);
 
 	int status1	= 0;

@@ -74,7 +74,10 @@ int tick(vproc_t* current){
 		case GSTOREI:
 			*((var*) (data_ptr + code[pc])) = stack[--sp];
 			break;
-		
+		case LOAD:
+			break;
+		case STORE:
+			break;
 		//System instructions
 		case HALT:
 			return VM_OK;

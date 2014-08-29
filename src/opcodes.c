@@ -1,2 +1,2 @@
-const char* const op_str_val[] = { "nop", "consti", "addi", "subi", "muli", "divi", "itob", "shiftli", "shiftri", "loadb", "storeb", "loadi", "storei", "gloadb", "gstoreb", "gloadi", "gstorei", "br", "brz", "brnz", "brlt", "brgt", "brgte", "brlte", "call", "ret", "xori", "ori", "andi", "printi", "emitb", "halt", "dbg", };
-const int const op_len_val[] = { 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, };
+const char* const op_str_val[] = { "nop", "consti", "addi", "subi", "muli", "divi", "itob", "shiftli", "shiftri", "loadarg", "loadargr", "storearg", "storeargr", "load", "loadr", "store", "storer", "gloadb", "gstoreb", "gloadi", "gstorei", "br", "brz", "brnz", "brlt", "brgt", "brgte", "brlte", "call", "ret", "xori", "ori", "andi", "printi", "emitb", "halt", "dbg", };
+const int const op_len_val[] = { 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, };
