@@ -4,6 +4,7 @@ addi		0
 subi		0
 muli		0
 divi		0
+modi		0
 itob		0
 shiftli		0
 shiftri		0

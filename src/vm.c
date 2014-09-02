@@ -1,4 +1,5 @@
 #include "vproc.h"
+#include "vsock.h"
 #include "stdio.h"
 #include "vm-error.h"
 #include "opcodes.h"
@@ -35,6 +36,11 @@ int tick(vproc_t* current){
 			a = stack[--sp];
 			b = stack[--sp];
 			stack[sp++] = b / a;
+			break;
+		case MODI:
+			a = stack[--sp];
+			b = stack[--sp];
+			stack[sp++] = b % a;
 			break;
 		
 		//Binary math
@@ -141,6 +147,21 @@ int tick(vproc_t* current){
 				pc = code[pc];
 			else
 				pc++;
+			break;
+		
+		//Socket operations
+		case MKSOCK:
+			stack[sp++] = mk_vsock(current->uid, 0);
+			break;
+		case RMSOCK:
+			stack[sp++] = rm_vsock(stack[--sp]);
+			break;
+		case RTSOCK:
+			a = stack[--sp];
+			b = stack[--sp];
+			ASSERT(vsock_list[b], "Null socket request")
+			vsock_list[b]->output = a;
+			vsock_list[b]->locked = 0;
 			break;
 
 		//System instructions

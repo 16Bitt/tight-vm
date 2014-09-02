@@ -19,7 +19,7 @@ typedef struct{
 	//Location to write
 	var input;
 	//Location to read
-	var ouput;
+	var output;
 } vsock_t;
 
 //Table of all vsocks
