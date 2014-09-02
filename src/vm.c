@@ -160,8 +160,42 @@ int tick(vproc_t* current){
 			a = stack[--sp];
 			b = stack[--sp];
 			ASSERT(vsock_list[b], "Null socket request")
-			vsock_list[b]->output = a;
-			vsock_list[b]->locked = 0;
+			vsock_list[b]->output	= a;
+			vsock_list[b]->ready	= 1;
+			break;
+		case LKSOCK:
+			a = stack[--sp];
+			ASSERT(vsock_list[a], "Null socket request")
+			if(vsock_list[a]->locked){
+				stack[sp++] = a;
+				pc--;
+			}
+
+			else{
+				vsock_list[a]->locked = 1;
+				vsock_list[a]->input = stack[--sp];
+			}
+			break;
+		case RDSOCK:
+			a = stack[--sp];
+			ASSERT(vsock_list[a], "Null socket request")
+			ASSERT(vsock_list[a]->locked, "Unlocked socket in RDSOCK")
+			if(!vsock_list[a]->ready){
+				stack[sp++] = a;
+				pc--;
+			}
+
+			else{
+				stack[sp++] = vsock_list[a]->output;
+				vsock_list[a]->locked = 0;
+				vsock_list[a]->ready = 0;
+			}
+			break;
+		case SVSOCK:
+			a = stack[--sp];
+			ASSERT(vsock_list[a], "Null socket request")
+			stack[sp++] = vsock_list[a]->locked;
+			stack[sp++] = vsock_list[a]->input;
 			break;
 
 		//System instructions
@@ -171,6 +205,14 @@ int tick(vproc_t* current){
 			error("Debug instruction", current, 0);
 			break;
 		
+		//Stack instructions
+		case DUP:
+			stack[sp++] = stack[sp];
+			break;
+		case DROP:
+			sp--;
+			break;
+
 		//Invalid instruction
 		default:
 			return error("Unrecognized opcode", current, 1);

@@ -15,6 +15,8 @@ typedef struct{
 
 	//If not zero, socket is locked
 	var locked;
+	//If not zero, socket is ready to read and return
+	var ready;
 
 	//Location to write
 	var input;

@@ -39,3 +39,8 @@ dbg		0
 mksock		0
 rmsock		0
 rtsock		0
+rdsock		0
+lksock		0
+svsock		0
+dup		0
+drop		0
