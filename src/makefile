@@ -1,8 +1,9 @@
-SOURCES = main.o vm-error.o vm.o disasm.o opcodes.o vm-file.o vsock.o sched.o
-CFLAGS	= -w -Iheader/ -m32 -ggdb
-OUTPUT	= main
+SOURCES		= main.o vm-error.o vm.o disasm.o opcodes.o vm-file.o vsock.o sched.o
+USERMODE	= tty test
+CFLAGS		= -w -Iheader/ -m32 -ggdb
+OUTPUT		= main
 
-all: init $(SOURCES)
+all: init $(SOURCES) usermode
 	cc $(CFLAGS) $(SOURCES) -o $(OUTPUT)
 
 init:
@@ -11,8 +12,11 @@ init:
 uninit:
 	-rm header/opcodes.h
 
+usermode:
+	bin/mkmult $(USERMODE)
+
 clean: uninit
-	-rm *.o $(OUTPUT)
+	-rm *.o $(OUTPUT) userland/*
 
 gdb:
 	sudo gdb ./$(OUTPUT)

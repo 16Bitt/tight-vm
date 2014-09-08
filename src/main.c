@@ -2,6 +2,9 @@
 #include "opcodes.h"
 #include "vproc.h"
 #include "disasm.h"
+#include "stdio.h"
+#include "vm-file.h"
+#include "vm-error.h"
 
 var run1[] = {
 	DBG,
@@ -23,14 +26,40 @@ var run2[] = {
 	HALT
 };
 
+var run3[] = {
+	MKSOCK,
+	DUP,
+	NOP,
+	NOP,
+	CONSTI, 69,
+	RTSOCK,
+	HALT
+};
+
+var run4[] = {
+	CONSTI, 0,
+	DUP,
+	LKSOCK,
+	RDSOCK,
+	PRINTI,
+	HALT
+};
+
 int main(){
-	vproc_t* p1 = new_proc(run1, 8, 0, 4, 0, 0);
-	vproc_t* p2 = new_proc(run2, 11, 0, 4, 0, 0);
+	FILE* file = fopen("./userland/tty", "rb");
+	ASSERT(file, "Couldn't open vfile")
+	
+	unsigned char buf[512];
+	fread(buf, 512, 1, file);
+	
+	puts("");
 
 	init_sched();
-	mk_vproc(p1);
-	mk_vproc(p2);
-
+	init_vsocks();
+	vproc_t* vp = load_vfile((void*) buf, 0);
+	disasm(vp, 0);
+	mk_vproc(vp);
+	
 	while(1) tick_all();
 	
 	return 0;

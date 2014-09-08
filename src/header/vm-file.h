@@ -19,7 +19,7 @@ typedef struct{
 	var code_size;
 	var stack_size;
 	var permissions;
-} vfile_t;
+} __attribute__((packed)) vfile_t;
 
 //loads a process for a particular user
 vproc_t* load_vfile(vfile_t* file, var uid);

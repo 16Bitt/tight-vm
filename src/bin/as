@@ -1,0 +1,181 @@
+#! /usr/bin/env ruby
+
+$symbols	= Hash.new
+$alloc		= 0
+$opcodes	= Hash.new
+$labels		= Hash.new
+$place		= 0
+
+$code		= []
+
+def error str
+	puts str
+	exit -1
+end
+
+def loadFile fname
+	puts "Loading opcode definitions"
+	
+	op = 0
+
+	file = File.open fname, "r"
+	file.each do |line|
+		line.chomp!
+		line.gsub! "\t\t", "\t"
+		arr = line.split "\t"
+		$opcodes["#{arr[0]}"] = [arr[1].to_i, op]
+		op += 1
+	end
+
+	file.close
+end
+
+def in? str, array
+	return array["#{str}"]
+end
+
+def number? str
+	for i in 0...str.length
+		if (str[i] < '0') or (str[i] > '9')
+			return nil
+		end
+	end
+
+	return true
+end
+
+#First pass, enumerates labels
+def assemble0 line
+	line.chomp!
+	line.gsub! "\t", ""
+	line.gsub! "  ", " "
+	line = line.split " "
+	if line.length == 0
+		return
+	end
+
+	if line[0][0] == ":"
+		if in?(line[0][1...line[0].length], $labels)
+			error "Redefinition of label"
+		end
+
+		$labels["#{line[0][1...line[0].length]}"] = $place
+		return
+	end
+
+	if line[0][0] == "#"
+		return
+	end
+
+	if in?(line[0], $opcodes)
+		$place += 1 + in?(line[0], $opcodes)[0]
+		return
+	end
+
+	if line[0] == "byte"
+		$symbols["#{line[1]}"] = $alloc
+		$alloc += 1
+		return
+	end
+
+	if line[0] == "word"
+		$symbols["#{line[1]}"] = $alloc
+		$alloc += 4
+		return
+	end
+end
+
+#Second pass, generates code
+def assemble1 line
+	line.chomp!
+	line.gsub! "\t", ""
+	line.gsub! "  ", " "
+	line = line.split " "
+	if line.length == 0
+		return
+	end
+
+	if line[0][0] == ":"
+		return
+	end
+
+	if line[0][0] == "#"
+		return
+	end
+
+	if line[0] == "byte"
+		return
+	end
+
+	if line[0] == "word"
+		return
+	end
+
+	if in?(line[0], $opcodes)
+		$code[$place] = in?(line[0], $opcodes)[1]
+		$place += 1
+
+		if in?(line[0], $opcodes)[0] != (line.length - 1)
+			error "Opcode argument mismatch"
+		end
+
+		for i in 0...(in?(line[0], $opcodes)[0])
+			if in?(line[i+1], $labels)
+				$code[$place] = in?(line[i+1], $labels)
+			elsif in?(line[i+1], $symbols)
+				$code[$place] = in?(line[i+1], $symbols)
+			elsif number? line[i+1]
+				$code[$place] = line[i+1].to_i
+			else
+				puts line
+				error "Can't resolve argument"
+			end
+
+			$place += 1
+		end
+
+		return
+	end
+	
+	puts line
+	error "Can't resolve code"
+end
+
+def run lines
+	lines.each do |line|
+		assemble0 line
+	end
+
+	$code = [] * ($place + 1)
+	$place = 0
+
+	lines.each do |line|
+		assemble1 line
+	end
+end
+
+lines = []
+file = File.open ARGV[0], "r"
+file.each do |line|
+	lines.push line
+end
+file.close
+
+loadFile ARGV[1]
+
+run lines
+
+file = File.open ARGV[2], "w"
+file.puts "\t[BITS 32]"
+file.puts "\tdd 0x80084545"
+file.puts "\tdd #{in?("main", $labels)}\t;entry point"
+file.puts "\tdd 0"
+file.puts "\tdd #{$alloc}\t;data size"
+file.puts "\tdd #{$code.length}\t;code size"
+file.puts "\tdd 128\t;stack size"
+file.puts "\tdd 0\n"
+
+$code.each do |value|
+	file.puts "\tdd #{value}"
+end
+file.close

@@ -1,0 +1,22 @@
+#entry point
+:main
+	word port
+	mksock
+	gstorei port
+	br service-request
+
+#Socket servicing loop
+:service-request
+	gloadi port
+	svsock
+	drop
+	brz service-request
+
+	gloadi port
+	svsock
+	emitb
+	drop
+	
+	consti 0
+	rtsock
+	br service-request

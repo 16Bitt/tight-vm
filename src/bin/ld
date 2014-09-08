@@ -1,0 +1,5 @@
+#! /bin/bash
+set -e
+
+#This will rename all variables within the programs given as arguments, and then merge all of the files into one
+echo TODO: this

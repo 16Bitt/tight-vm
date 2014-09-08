@@ -1,0 +1,13 @@
+:main
+	#Write 69 to socket 0
+	consti 69
+	consti 0
+	lksock
+	
+	#Wait for response from the socket
+	consti 0
+	rdsock
+
+	#Return to the head of the loop
+	br main
+
