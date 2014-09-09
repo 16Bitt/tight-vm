@@ -3,6 +3,7 @@
 set -e
 
 for i in $@; do
+	echo Chain assembling $i...
 	bin/as runtime/$i.vm opcodes.dict $i.asm
 	nasm -fbin $i.asm -o $i
 	rm $i.asm
